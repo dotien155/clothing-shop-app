@@ -66,6 +66,8 @@ Route::group([
     
     Route::get('/blog/detail-pagination/{id}',[BlogController::class, 'pagingBlogDetail']);
 
+    Route::post('/blog/comment/{id}',[BlogController::class, 'comment']);
+
 
     // Route::get('testapi', 'TestApiController@index');
     // Route::post('testapi','TestApiController@store');
