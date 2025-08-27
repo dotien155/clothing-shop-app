@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Rate from "./Rate";
 import ListComment from "./ListComment";
 import Comment from "./Comment";
+import StarRatings from "react-star-ratings";
 
 
 function Detail(props) {
@@ -11,25 +12,30 @@ function Detail(props) {
 
     const [data, setData] = useState('');
     const [listCmt, setListCmt] = useState([]);
-
-    //console.log("Data:", data);
+    const [getAvgRating, setAvgRating] = useState(0);
 
     function getComment(newData) {
         console.log("newData:", newData);
         setListCmt(prev => [newData, ...prev]);
-
     }
-
-    useEffect(() => {
-        console.log("List comment:", listCmt);
-    }, [listCmt]);
     
-
     useEffect(() => {
         API.get('/blog/detail/' + params.id)
             .then(res => {
                 setData(res.data.data);
                 setListCmt(res.data.data.comment); //DS comment 
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+
+        API.get('/blog/rate/' + params.id)
+            .then(res => {
+                //console.log(res.data.data);
+                const arrRating = res.data.data;
+                const avgRating = arrRating.reduce((total, item) => total + item.rate,0) / arrRating.length;
+                //alert(avgRating);
+                setAvgRating(avgRating);    
             })
             .catch(function (error) {
                 console.log(error);
@@ -62,7 +68,15 @@ function Detail(props) {
                     </div>
                 </div>
             </div>{/*/blog-post-area*/}
-            <Rate />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <StarRatings
+                    rating={getAvgRating}
+                    starRatedColor="blue"
+                    numberOfStars={6}
+                    name="rating"
+                />
+                </div>
+            <Rate idBlog={params.id} getAvgRating={getAvgRating}/>
             <div className="socials-share">
                 <a ><img src={"http://localhost/laravel-api/laravel8/public/frontend/images/blog/socials.png"} alt="" /></a>
             </div>{/*/socials-share*/}

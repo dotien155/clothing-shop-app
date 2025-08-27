@@ -8,7 +8,7 @@ function Comment(props) {
 
     const { comments,  idBlog} = props;
     //console.log(props);
-    console.log(comments);
+    //console.log(comments);
     
 
     const [idReply, setIdReply] = useState('');
